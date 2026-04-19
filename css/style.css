@@ -204,8 +204,8 @@ canvas:active {
 }
 
 body {
-    touch-action: none;  /* 禁止浏览器默认手势 */
-    overscroll-behavior: none; /* 禁止滚动回弹效果 */
+    touch-action: none;
+    overscroll-behavior: none;
 }
 
 #canvas-container {
@@ -214,5 +214,12 @@ body {
 }
 
 canvas {
-    touch-action: none;  /* 确保画布本身也不触发滚动 */
+    touch-action: none;
+}
+
+/* 正式版隐藏开发按钮 */
+#toggle-edit-mode,
+#export-data-btn,
+#toggle-edge-mode {
+    display: none !important;
 }

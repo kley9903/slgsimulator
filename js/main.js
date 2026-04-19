@@ -338,10 +338,10 @@ function init() {
     window.addEventListener('mouseup', (e) => onMouseUp(e, canvas));
     canvas.addEventListener('wheel', (e) => onWheel(e, canvas, render), { passive: false });
     // 觸摸事件 (手機/平板)
-    canvas.addEventListener('touchstart', (e) => window.touchHandlers.onTouchStart(e, canvas), { passive: false });
-    canvas.addEventListener('touchmove', (e) => window.touchHandlers.onTouchMove(e, canvas, render), { passive: false });
-    canvas.addEventListener('touchend', (e) => window.touchHandlers.onTouchEnd(e, canvas), { passive: false });
-    canvas.addEventListener('touchcancel', (e) => window.touchHandlers.onTouchEnd(e, canvas), { passive: false });
+    canvas.addEventListener('touchstart', (e) => window.touchHandlers.onTouchStart(e, canvas), { passive: true });
+    canvas.addEventListener('touchmove', (e) => window.touchHandlers.onTouchMove(e, canvas, render), { passive: true });
+    canvas.addEventListener('touchend', (e) => window.touchHandlers.onTouchEnd(e, canvas), { passive: true });
+    canvas.addEventListener('touchcancel', (e) => window.touchHandlers.onTouchEnd(e, canvas), { passive: true });
     window.addEventListener('resize', () => {
         resizeCanvas();
         render();
