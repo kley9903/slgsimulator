@@ -509,7 +509,7 @@ function drawHighlightPath(ctx, view) {
 
     // 注意：这里不再需要 ctx.save/restore 和 translate/scale，
     // 因为 drawMap 已经为我们设置好了正确的变换上下文。
-    ctx.strokeStyle = '#000000';   // 亮绿色
+    ctx.strokeStyle = '#f02929';   // 亮绿色
     ctx.lineWidth = 12;
     ctx.globalAlpha = 0.9;
     ctx.lineCap = 'round';
