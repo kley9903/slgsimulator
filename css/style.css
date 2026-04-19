@@ -224,9 +224,6 @@ canvas {
     display: none !important;
 }
 
-.path-mode-btn {
-    bottom: calc(20px + env(safe-area-inset-bottom));
-}
 
 #canvas-container {
     position: relative;
