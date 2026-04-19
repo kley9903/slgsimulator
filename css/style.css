@@ -115,14 +115,14 @@ canvas:active {
     z-index: 40;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 20px;  /* 增大点击区域 */
     border-radius: 30px;
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    transition: background 0.2s;
     font-size: 14px;
     backdrop-filter: blur(4px);
+    bottom: 20px;  /* 统一基础 bottom 值 */
 }
 
 .edit-mode-btn {
@@ -222,4 +222,15 @@ canvas {
 #export-data-btn,
 #toggle-edge-mode {
     display: none !important;
+}
+
+.path-mode-btn {
+    bottom: calc(20px + env(safe-area-inset-bottom));
+}
+
+#canvas-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;  /* 确保不会裁剪按钮，但如果按钮位置超出容器则会被隐藏 */
 }
