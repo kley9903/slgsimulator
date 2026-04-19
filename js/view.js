@@ -145,21 +145,28 @@ function getView() {
 }
 
 // ---------- 觸摸事件處理 (手機/平板) ----------
-let lastTouchDistance = 0; // 用于双指缩放
+let lastTouchDistance = 0;
+
+// 判断触摸目标是否为可交互元素（按钮、链接等）
+function isInteractiveElement(target) {
+    return target.closest('button, a, .map-action-btn, #color-panel');
+}
 
 function onTouchStart(e, canvas) {
-    e.preventDefault(); // 阻止页面滚动
-    const touches = e.touches;
+    // 如果触摸的是按钮，不阻止默认行为，让按钮正常响应
+    if (isInteractiveElement(e.target)) {
+        return;
+    }
+    e.preventDefault(); // 否则阻止页面滚动
 
+    const touches = e.touches;
     if (touches.length === 1) {
-        // 单指：开始拖拽
         isDragging = true;
         lastMouseX = touches[0].clientX;
         lastMouseY = touches[0].clientY;
         canvas.style.cursor = 'grabbing';
     } else if (touches.length === 2) {
-        // 双指：准备缩放
-        isDragging = false; // 双指时不触发平移
+        isDragging = false;
         const dx = touches[0].clientX - touches[1].clientX;
         const dy = touches[0].clientY - touches[1].clientY;
         lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
@@ -167,11 +174,13 @@ function onTouchStart(e, canvas) {
 }
 
 function onTouchMove(e, canvas, renderCallback) {
+    if (isInteractiveElement(e.target)) {
+        return;
+    }
     e.preventDefault();
-    const touches = e.touches;
 
+    const touches = e.touches;
     if (touches.length === 1 && isDragging) {
-        // 单指拖拽
         const dx = touches[0].clientX - lastMouseX;
         const dy = touches[0].clientY - lastMouseY;
         view.x += dx;
@@ -181,7 +190,6 @@ function onTouchMove(e, canvas, renderCallback) {
         lastMouseY = touches[0].clientY;
         renderCallback();
     } else if (touches.length === 2) {
-        // 双指缩放
         const dx = touches[0].clientX - touches[1].clientX;
         const dy = touches[0].clientY - touches[1].clientY;
         const currentDistance = Math.sqrt(dx * dx + dy * dy);
@@ -190,7 +198,6 @@ function onTouchMove(e, canvas, renderCallback) {
             const scaleFactor = currentDistance / lastTouchDistance;
             const newScale = view.scale * scaleFactor;
             if (newScale >= CONFIG.MIN_SCALE && newScale <= CONFIG.MAX_SCALE) {
-                // 计算两指中心点作为缩放锚点
                 const centerX = (touches[0].clientX + touches[1].clientX) / 2;
                 const centerY = (touches[0].clientY + touches[1].clientY) / 2;
                 const rect = canvas.getBoundingClientRect();
@@ -212,6 +219,9 @@ function onTouchMove(e, canvas, renderCallback) {
 }
 
 function onTouchEnd(e, canvas) {
+    if (isInteractiveElement(e.target)) {
+        return;
+    }
     e.preventDefault();
     isDragging = false;
     lastTouchDistance = 0;
