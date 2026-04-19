@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>軍師模擬器</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="canvas-container">
+    <div id="water-background"></div>
+    <canvas id="map-canvas"></canvas>
+    <div id="info">🔍 拖曳平移 · 滾輪縮放 · 菱形地圖 100x100</div>
+    <div id="grid-coords">📌 座標：- , -</div>
+    <!--
+    <button id="toggle-edit-mode" class="map-action-btn edit-mode-btn">➕ 新增城市模式</button>
+    <button id="export-data-btn" class="map-action-btn export-btn">📤 匯出城市資料</button>
+    <button id="toggle-edge-mode" class="map-action-btn edge-mode-btn">➕ 新增道路模式</button>
+    -->
+    <button id="toggle-path-mode" class="map-action-btn path-mode-btn">🗺️ 路徑查詢</button>
+    <div id="loading">⏳ 載入地圖素材中...</div>
+</div>
+<script src="js/config.js"></script>
+<script src="js/cities.js"></script>  
+<script src="js/map.js"></script>
+<script src="js/view.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

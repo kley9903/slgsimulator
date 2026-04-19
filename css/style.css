@@ -1,0 +1,204 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0a121c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+#canvas-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #000; /* fallback */
+}
+
+.edge-mode-btn {
+    bottom: 120px;
+    background: #2c3e50;
+}
+.edge-mode-btn.active {
+    background: #1abc9c;
+}
+.edge-mode-btn:hover {
+    background: #1abc9c;
+}
+.edge-mode-btn.active:hover {
+    background: #16a085;
+}
+
+/* 新增：water 平鋪背景層 */
+#water-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../image/environment/water.png');
+    background-repeat: repeat;
+    background-size: auto;
+    background-position: 0 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    z-index: 2;
+    background: transparent; /* 讓背景層可見 */
+}
+
+canvas:active {
+    cursor: grabbing;
+}
+
+#info {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    color: #ddd;
+    background: rgba(10, 20, 30, 0.8);
+    padding: 8px 18px;
+    border-radius: 40px;
+    font-size: 14px;
+    backdrop-filter: blur(4px);
+    border: 1px solid #3a5a7a;
+    pointer-events: none;
+    z-index: 10;
+}
+#grid-coords {
+    position: absolute;
+    bottom: 61px;
+    left: 16px;  /* 根据 #info 宽度调整，或使用 flex 容器 */
+    color: #ddd;
+    background: rgba(10, 20, 30, 0.8);
+    padding: 8px 18px;
+    border-radius: 40px;
+    font-size: 14px;
+    backdrop-filter: blur(4px);
+    border: 1px solid #3a5a7a;
+    pointer-events: none;
+    z-index: 10;
+}
+
+#loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    background: #1e3a5a;
+    padding: 12px 24px;
+    border-radius: 40px;
+    font-size: 18px;
+    z-index: 20;
+}
+
+/* 地图上的浮动操作按钮 */
+.map-action-btn {
+    position: absolute;
+    right: 20px;
+    z-index: 40;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transition: background 0.2s;
+    font-size: 14px;
+    backdrop-filter: blur(4px);
+}
+
+.edit-mode-btn {
+    bottom:70px;
+    background: #2c3e50;
+}
+
+.edit-mode-btn.active {
+    background: #27ae60;
+}
+
+.export-btn {
+    bottom: 170px;
+    background: #8e44ad;
+}
+
+.export-btn:hover {
+    background: #a569bd;
+}
+
+.edit-mode-btn:hover {
+    background: #3a5668;
+}
+
+.edit-mode-btn.active:hover {
+    background: #2ecc71;
+}
+
+/* 城市颜色切换面板 */
+#color-panel {
+    position: absolute;
+    bottom: 20px;
+    right: 180px;
+    display: flex;
+    gap: 12px;
+    z-index: 30;
+    background: rgba(20, 30, 45, 0.8);
+    padding: 10px 16px;
+    border-radius: 40px;
+    backdrop-filter: blur(4px);
+    border: 1px solid #5a7a9a;
+}
+
+.color-btn {
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    transition: opacity 0.2s;
+}
+
+.color-btn.red {
+    background: #c0392b;
+}
+
+.color-btn.blue {
+    background: #2980b9;
+}
+
+.color-btn:hover {
+    opacity: 0.8;
+}
+
+.path-mode-btn {
+    bottom: 20px;
+    background: #8e44ad;
+}
+.path-mode-btn.active {
+    background: #9b59b6;
+}
+.path-mode-btn:hover {
+    background: #9b59b6;
+}
+.path-mode-btn.active:hover {
+    background: #8e44ad;
+}
