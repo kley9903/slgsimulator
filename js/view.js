@@ -146,24 +146,29 @@ function getView() {
 
 // ---------- 觸摸事件處理 (手機/平板) ----------
 let lastTouchDistance = 0;
+let touchStartX = 0, touchStartY = 0;
+let hasMoved = false; // 标记是否发生了移动
+const MOVE_THRESHOLD = 10; // 移动超过此像素才算拖拽
 
-// 判断触摸目标是否为可交互元素（按钮、链接等）
 function isInteractiveElement(target) {
     return target.closest('button, a, .map-action-btn, #color-panel');
 }
 
 function onTouchStart(e, canvas) {
-    // 如果触摸的是按钮，不阻止默认行为，让按钮正常响应
     if (isInteractiveElement(e.target)) {
         return;
     }
-    e.preventDefault(); // 否则阻止页面滚动
+    e.preventDefault();
 
     const touches = e.touches;
     if (touches.length === 1) {
         isDragging = true;
-        lastMouseX = touches[0].clientX;
-        lastMouseY = touches[0].clientY;
+        hasMoved = false;
+        const touch = touches[0];
+        lastMouseX = touch.clientX;
+        lastMouseY = touch.clientY;
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
         canvas.style.cursor = 'grabbing';
     } else if (touches.length === 2) {
         isDragging = false;
@@ -183,13 +188,24 @@ function onTouchMove(e, canvas, renderCallback) {
     if (touches.length === 1 && isDragging) {
         const dx = touches[0].clientX - lastMouseX;
         const dy = touches[0].clientY - lastMouseY;
-        view.x += dx;
-        view.y += dy;
-        clampView(view, canvas);
+        
+        // 检查是否超过移动阈值
+        const totalDx = touches[0].clientX - touchStartX;
+        const totalDy = touches[0].clientY - touchStartY;
+        if (!hasMoved && (Math.abs(totalDx) > MOVE_THRESHOLD || Math.abs(totalDy) > MOVE_THRESHOLD)) {
+            hasMoved = true;
+        }
+
+        if (hasMoved) {
+            view.x += dx;
+            view.y += dy;
+            clampView(view, canvas);
+            renderCallback();
+        }
         lastMouseX = touches[0].clientX;
         lastMouseY = touches[0].clientY;
-        renderCallback();
     } else if (touches.length === 2) {
+        hasMoved = true; // 双指操作时阻止点击
         const dx = touches[0].clientX - touches[1].clientX;
         const dy = touches[0].clientY - touches[1].clientY;
         const currentDistance = Math.sqrt(dx * dx + dy * dy);
@@ -223,10 +239,22 @@ function onTouchEnd(e, canvas) {
         return;
     }
     e.preventDefault();
+    
+    // 如果没有发生移动，且是单指触摸，说明是点击操作，此时不需要额外处理，
+    // 浏览器的 click 事件会正常触发（因为我们没有在 touchstart 中完全阻止 click 的产生）
+    // 注意：preventDefault 在 touchstart 中已调用，但不会阻止 click 事件，只是阻止了页面滚动。
+    
     isDragging = false;
     lastTouchDistance = 0;
+    hasMoved = false;
     canvas.style.cursor = 'grab';
 }
+
+window.touchHandlers = {
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd
+};
 
 // 導出觸摸處理函數供 main.js 綁定
 window.touchHandlers = {
