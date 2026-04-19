@@ -143,3 +143,84 @@ function clampView(view, canvas) {
 function getView() {
     return view;
 }
+
+// ---------- 觸摸事件處理 (手機/平板) ----------
+let lastTouchDistance = 0; // 用于双指缩放
+
+function onTouchStart(e, canvas) {
+    e.preventDefault(); // 阻止页面滚动
+    const touches = e.touches;
+
+    if (touches.length === 1) {
+        // 单指：开始拖拽
+        isDragging = true;
+        lastMouseX = touches[0].clientX;
+        lastMouseY = touches[0].clientY;
+        canvas.style.cursor = 'grabbing';
+    } else if (touches.length === 2) {
+        // 双指：准备缩放
+        isDragging = false; // 双指时不触发平移
+        const dx = touches[0].clientX - touches[1].clientX;
+        const dy = touches[0].clientY - touches[1].clientY;
+        lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
+    }
+}
+
+function onTouchMove(e, canvas, renderCallback) {
+    e.preventDefault();
+    const touches = e.touches;
+
+    if (touches.length === 1 && isDragging) {
+        // 单指拖拽
+        const dx = touches[0].clientX - lastMouseX;
+        const dy = touches[0].clientY - lastMouseY;
+        view.x += dx;
+        view.y += dy;
+        clampView(view, canvas);
+        lastMouseX = touches[0].clientX;
+        lastMouseY = touches[0].clientY;
+        renderCallback();
+    } else if (touches.length === 2) {
+        // 双指缩放
+        const dx = touches[0].clientX - touches[1].clientX;
+        const dy = touches[0].clientY - touches[1].clientY;
+        const currentDistance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (lastTouchDistance > 0) {
+            const scaleFactor = currentDistance / lastTouchDistance;
+            const newScale = view.scale * scaleFactor;
+            if (newScale >= CONFIG.MIN_SCALE && newScale <= CONFIG.MAX_SCALE) {
+                // 计算两指中心点作为缩放锚点
+                const centerX = (touches[0].clientX + touches[1].clientX) / 2;
+                const centerY = (touches[0].clientY + touches[1].clientY) / 2;
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = centerX - rect.left;
+                const mouseY = centerY - rect.top;
+
+                const worldX = (mouseX - view.x) / view.scale;
+                const worldY = (mouseY - view.y) / view.scale;
+
+                view.scale = newScale;
+                view.x = mouseX - worldX * view.scale;
+                view.y = mouseY - worldY * view.scale;
+                clampView(view, canvas);
+                renderCallback();
+            }
+        }
+        lastTouchDistance = currentDistance;
+    }
+}
+
+function onTouchEnd(e, canvas) {
+    e.preventDefault();
+    isDragging = false;
+    lastTouchDistance = 0;
+    canvas.style.cursor = 'grab';
+}
+
+// 導出觸摸處理函數供 main.js 綁定
+window.touchHandlers = {
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd
+};
